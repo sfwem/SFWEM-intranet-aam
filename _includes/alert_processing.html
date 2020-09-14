@@ -1,0 +1,103 @@
+{%- comment -%}
+    Process Severity Info
+    Valid options: "info", "warn", "emergency", nul
+    nul happens when no option is specified. This should be avoided,
+    unless the message is a test.
+
+    Input var: page.severity
+    Output var: severitydesc, byline, title
+{%- endcomment -%}
+{%- case page.severity -%}
+            {%- when "info" -%}
+            {%- assign title = "ℹ Information" -%}
+            {%- assign byline = "Information published" -%}
+            {%- assign severitydesc = "<code>info</code>" -%}
+            {%- when "warn" -%}
+            {%- assign title = "⚠ Urgent Alert" -%}
+            {%- assign byline = "Warning issued" -%}
+            {%- assign severitydesc = "<code>warn</code>" -%}
+            {%- when "emergency" -%}
+            {%- assign title = "🚨Emergency Message🚨" -%}
+            {%- assign byline = "Emergency declared" -%}
+            {%- assign severitydesc= "<code>emergency</code>" -%}
+            {%- when nul -%}
+            {%- assign title = "Alert Details" -%}
+            {%- assign byline = "Message published" -%}
+            {%- assign severitydesc = "<code>null</code>, likely routine" -%}
+{%- endcase -%}
+
+{%- comment -%}
+    Process Author Info
+    Checks page.author, and if nothing is specified,
+    sets it to the contents of config.yml's author.name
+
+    Input: page.author, site.author.name
+    Output: author
+{%- endcomment -%}
+{%- if page.author -%}
+    {%- assign author = page.author -%}
+    {%- else -%}
+    {%- assign author = site.author.name -%}
+{%- endif -%}
+
+{%- comment -%}
+    Process Related Bulletin 
+    Checks page.details, and if present populates link text
+    for the alert page. 
+
+    Input: page.details
+    Output: detailsdesc, detailslink, detailslinkdesc
+{%- endcomment -%}
+{%- if page.details -%}
+        {%- capture detailslink -%}
+            {% link {{ page.details }} %}
+        {%- endcapture -%}
+        {%- capture detailsdesc -%}
+            Related Bulletin is <code>{{ page.details }}</code>
+        {%- endcapture -%}
+        {%- capture detailslinkdesc -%}
+            Related Bulletin URL is <a href="{{ detailslink }}"><code>{{ detailslink }}</code></a>
+        {%- endcapture -%}
+      {%- else -%}
+      {%- assign detailsdesc = "No bulletins were linked to this alert." -%}
+      {%- assign detailslink = nil -%}
+      {%- assign detailslinkdesc = nil -%}
+{%- endif -%}
+
+{%- comment -%}
+    Process Until Date
+
+    Reads post.until, and generates untildesc for use in bylines and similar fields.
+
+    Input: post.until 
+    Output: untildesc
+{%- endcomment -%}
+{%- capture untildesc -%}
+    {% if page.until %}
+            until {{ page.until | date_to_string }}
+        {% else %}
+            until further notice
+    {% endif %}
+{%- endcapture -%}
+
+
+{%- comment -%}
+    Alert JSON
+    Generates raw JSON of the alert data, for API use.
+
+    input: page
+    output: alertjson
+{%- endcomment -%}
+{% capture alertjson %}
+  {
+      "id"         : "{{ page.id }}",
+      "title"      : "{{ page.title | escape }}",
+      "author"     : "{{ author }}",
+      "path"       : "{{ page.url | absolute_url }}",
+      "date"       : "{{ page.date | date_to_rfc822 }}",
+      "until"      : "{{ page.until | date_to_rfc822 }}",
+      "severity"   : "{{ page.severity }}",
+      "details"    : "{{ detailslink | absolute_url }}",
+      "content"    : "{{ page.content | strip_html | strip_newlines }}"
+  }
+{% endcapture %}

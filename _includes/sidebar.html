@@ -24,15 +24,24 @@
         {% endif %}
       {% endif %}
     {% endfor %}
-
-    <a class="sidebar-nav-item" href="{{ site.github.repo }}/archive/v{{ site.version }}.zip">Download</a>
-    <a class="sidebar-nav-item" href="{{ site.github.repo }}">GitHub project</a>
-    <span class="sidebar-nav-item">Currently v{{ site.version }}</span>
+  </nav>
+  <br />
+  <nav class="sidebar-nav">
+    <span class="sidebar-item">Mesh Access Required:</span>
+    <a class="sidebar-nav-item" href="http://localnode.local.mesh">Local Node Status</a>
+    <a class="sidebar-nav-item" href="http://localnode.local.mesh:8080/cgi-bin/mesh">Mesh Nodes Directory</a>
+  </nav>
   </nav>
 
   <div class="sidebar-item">
     <p>
-      &copy; {{ site.time | date: '%Y' }}. All rights reserved.
+      <em>Reminder: Access to the mesh is governed by Part 97 of the FCC Rules, and misuse can result in enforcement actions by the FCC. Authorized Use Only!</em>
     </p>
-  </div>
+    Release {{ site.git.total_commits }} ({{ site.git.last_commit.short_sha }}) built<br />
+    {{ site.git.last_commit.commit_date }}
+    </p>
+    <p>
+      &copy; {{ site.time | date: '%Y' }} SFWEM. All rights reserved.
+    </p>
+</div>
 </div>

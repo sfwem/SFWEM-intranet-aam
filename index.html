@@ -1,8 +1,14 @@
 ---
 layout: default
 title: Home
+agination:
+    enabled: true
+    collection: posts
 ---
-
+<h1>You're Connected.</h1>
+<p>The San Francisco Wireless Emergency Mesh (SFWEM) is a volunteer-led project to build a resilient high-speed wireless connectivity throughout the San Francisco Bay Area for use during disasters and emergencies.</p>
+<p>This website provides details of on-mesh resources for use by Amateur Radio operators and served agencies, such as documentation, node configuration details and backend services like maps or NTP, and so on.</p>
+<p>This site also hosts an AREDN Alert Messages (AAM) server, and an Operational Bulletins blog with eratta and other notices about the mesh.</p>
 <div class="posts">
   {% for post in paginator.posts %}
   <div class="post">
@@ -15,23 +21,8 @@ title: Home
     <span class="post-date">{{ post.date | date_to_string }}</span>
 
     {{ post.content }}
+    
   </div>
+  <a class="pagination-item newer" href="/bulletins">More Bulletins</a>
   {% endfor %}
-</div>
-
-<div class="pagination">
-  {% if paginator.next_page %}
-    <a class="pagination-item older" href="{{ paginator.next_page_path | absolute_url }}">Older</a>
-  {% else %}
-    <span class="pagination-item older">Older</span>
-  {% endif %}
-  {% if paginator.previous_page %}
-    {% if paginator.page == 2 %}
-      <a class="pagination-item newer" href="{{ '/' | absolute_url }}">Newer</a>
-    {% else %}
-      <a class="pagination-item newer" href="{{ paginator.previous_page_path | absolute_url }}">Newer</a>
-    {% endif %}
-  {% else %}
-    <span class="pagination-item newer">Newer</span>
-  {% endif %}
 </div>

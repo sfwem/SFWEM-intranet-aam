@@ -1,0 +1,69 @@
+---
+layout: null
+---
+{%- for alert in site.alerts limit:1 -%}
+    {%- comment -%}
+        Process Severity Info
+        Valid options: "info", "warn", "emergency", nil
+        nil happens when no option is specified. This should be avoided,
+        unless the message is a test.
+
+        Input var: alert.severity
+        Output var: byline, title
+    {%- endcomment -%}
+    {%- case alert.severity -%}
+                {%- when "info" -%}
+                {%- assign title = "ℹ Information" -%}
+                {%- assign byline = "Information published" -%}
+                {%- when "warn" -%}
+                {%- assign title = "⚠ Urgent Alert" -%}
+                {%- assign byline = "Warning issued" -%}
+                {%- when "emergency" -%}
+                {%- assign title = "🚨Emergency Message" -%}
+                {%- assign byline = "Emergency declared" -%}
+                {%- when nul -%}
+                {%- assign title = "Routine Message" -%}
+                {%- assign byline = "Message published" -%}
+    {%- endcase -%}
+    {%- comment -%}
+            Process Author Info
+            Checks alert.author, and if nothing is specified,
+            sets it to the contents of config.yml's author.name
+
+            Input: alert.author, site.author.name
+            Output: author
+      {%- endcomment -%}
+      {%- if alert.author -%}
+            {%- assign author = alert.author -%}
+      {%- else -%}
+            {%- assign author = site.author.name -%}
+      {%- endif -%}
+      {%- comment -%}
+      Process Related Bulletin 
+      Checks alert.details, and if present populates link text
+      for the alert page. 
+
+      Input: alert.details
+      Output: detailslink
+      {%- endcomment -%}
+      {%- if alert.details -%}
+            {%- capture detailslink -%}
+                  {% link {{ alert.details }} %}
+            {%- endcapture -%}
+      {%- else -%}
+            {%- assign detailslink = nil -%}
+      {%- endif -%}
+      <p>
+            <a href="{{ alert.url | absolute_url }}" <span style="font-size:.9em; text-decoration: underline; color: black;">
+                  {{ title }} Issued by {{ author }} on {{ alert.date | date_to_string }} {{ untildesc | strip_newlines | lstrip | rstrip }}
+            </a>
+            <br />
+      <strong>{{ alert.content | strip_html | strip_newlines | lstrip | rstrip }}</strong>
+      <br />
+      <span style="font-size:.9em">
+            <a href="{{ detailslink | absolute_url }}">More Details...</a> | 
+            <a href="{{ site.url }}/alerts/">View {{ site.alerts | size }} active alerts</a> | 
+            <a href="{{ site.url }}">SFWEM Intranet</a>
+      </span>
+      </p>
+{%- endfor -%}

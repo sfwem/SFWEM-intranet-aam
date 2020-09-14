@@ -1,0 +1,24 @@
+---
+layout: page
+title: Active Alerts
+permalink: /alerts
+
+---
+
+Current alerts are posted here. lerts are also shown on nodes configured to use SFWEM's AAM server.
+
+<hr>
+
+<div class="posts">
+  {% for page in site.alerts %}
+  <div class="post">
+  {% include alert_processing.html %}
+    <h2 class="post-title">{{ title }}</h2>
+    <h5 class="post-date">Issued by {{ author }} on {{ page.date | date_to_string}} {{ untildesc }}</h5>
+    {{ page.excerpt }}
+
+    <h5><a href="{{ page.url | absolute_url }}">View Details</a></h5>
+    
+  </div>
+  {% endfor %}
+</div>

@@ -1,0 +1,28 @@
+---
+layout: default
+---
+{% include alert_processing.html %}
+<div class="post">
+    <h1>{{ title }}</h1>
+    {{ content }}
+    <span class="post-date">
+        {{ byline }} by {{ author }}
+        <br />
+        Valid from {{ page.date | date_to_string }}
+        {{ untildesc }}
+        <br />
+        Alert severity is {{ severitydesc }}
+        <br />
+        {{ detailsdesc }}
+        <br />
+        {{ detailslinkdesc }}
+    </span>
+    <hr />
+    <h2>Alert JSON</h2>
+{% highlight json %}
+[
+    {{ alertjson }}
+]
+{% endhighlight %}
+
+</div>

@@ -1,0 +1,46 @@
+---
+layout: null
+---
+[
+      {% for alert in site.alerts %}
+      {%- comment -%}
+            Process Author Info
+            Checks alert.author, and if nothing is specified,
+            sets it to the contents of config.yml's author.name
+
+            Input: alert.author, site.author.name
+            Output: author
+      {%- endcomment -%}
+      {%- if alert.author -%}
+            {%- assign author = alert.author -%}
+      {%- else -%}
+            {%- assign author = site.author.name -%}
+      {%- endif -%}
+      {%- comment -%}
+      Process Related Bulletin 
+      Checks alert.details, and if present populates link text
+      for the alert page. 
+
+      Input: alert.details
+      Output: detailslink
+      {%- endcomment -%}
+      {%- if alert.details -%}
+            {%- capture detailslink -%}
+                  {% link {{ alert.details }} %}
+            {%- endcapture -%}
+      {%- else -%}
+            {%- assign detailslink = nil -%}
+      {%- endif -%}
+      {
+            "id"         : "{{ alert.id }}",
+            "title"      : "{{ alert.title | escape }}",
+            "author"     : "{{ author }}",
+            "path"       : "{{ alert.url | absolute_url }}",
+            "date"       : "{{ alert.date | date_to_rfc822 }}",
+            "until"      : "{{ alert.until | date_to_rfc822 }}",
+            "severity"   : "{{ alert.severity }}",
+            "details"    : "{{ detailslink | absolute_url }}",
+            "content"    : "{{ alert.content | strip_html | strip_newlines }}"
+        }{% if forloop.last %}{% else %},{% endif %}
+	{% endfor %}
+]
